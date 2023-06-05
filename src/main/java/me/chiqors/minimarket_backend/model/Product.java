@@ -42,6 +42,9 @@ public class Product {
     @Column(name = "stock")
     private Integer stock;
 
+    @Column(name = "is_deleted")
+    private Boolean deleted;
+
     @Column(name = "created_at")
     private Date createdAt;
 
@@ -50,6 +53,14 @@ public class Product {
 
     @Column(name = "deleted_at")
     private Date deletedAt;
+
+    // -------------- Out Relationships --------------
+
+    @OneToOne(mappedBy = "product")
+    private ProductImage productImage;
+
+    @OneToOne(mappedBy = "product")
+    private ProductCategory productCategory;
 
     // -------------- Methods --------------
 

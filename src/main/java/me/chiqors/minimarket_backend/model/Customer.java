@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter @Setter
@@ -43,8 +44,13 @@ public class Customer {
     @Column(name = "updated_at")
     private String updatedAt;
 
-    @Column(name = "deleted_at")
-    private String deletedAt;
+    // -------------- Out Relationships --------------
+
+    @OneToMany(mappedBy = "customer")
+    private List<Transaction> transactions;
+
+    @OneToOne(mappedBy = "customer")
+    private Account accounts;
 
     // -------------- Methods --------------
 

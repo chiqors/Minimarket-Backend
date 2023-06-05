@@ -16,6 +16,9 @@ public class Coupon {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private String code;
 
+    @Column(name = "description")
+    private String description;
+
     @Column(name = "value")
     private Integer value;
 
