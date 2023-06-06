@@ -3,14 +3,12 @@ package me.chiqors.minimarket_backend.model.parent;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import me.chiqors.minimarket_backend.util.DateConverter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -36,11 +34,15 @@ public class Person {
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @CreationTimestamp
     @Column(name = "created_at")
-    private String createdAt;
+    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
+    @Convert(converter = DateConverter.class)
+    private Date createdAt;
 
-    @UpdateTimestamp
     @Column(name = "updated_at")
-    private String updatedAt;
+    @Temporal(TemporalType.TIMESTAMP)
+    @UpdateTimestamp
+    @Convert(converter = DateConverter.class)
+    private Date updatedAt;
 }

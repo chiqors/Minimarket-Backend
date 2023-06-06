@@ -3,6 +3,7 @@ package me.chiqors.minimarket_backend.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import me.chiqors.minimarket_backend.util.DateConverter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -23,16 +24,13 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "product_category_id")
-    private ProductCategory category;
+    private ProductCategory productCategory;
 
     @Column(name = "name")
     private String name;
 
     @Column(name = "description")
     private String description;
-
-    @Column(name = "expired_date")
-    private Date expiredDate;
 
     @Column(name = "price")
     private Double price;
@@ -46,21 +44,20 @@ public class Product {
     @Column(name = "is_deleted")
     private Boolean isDeleted;
 
-    @CreationTimestamp
     @Column(name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
+    @Convert(converter = DateConverter.class)
     private Date createdAt;
 
-    @UpdateTimestamp
     @Column(name = "updated_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    @UpdateTimestamp
+    @Convert(converter = DateConverter.class)
     private Date updatedAt;
 
     @Column(name = "deleted_at")
     private Date deletedAt;
-
-    // -------------- Out Relationships --------------
-
-    @OneToOne(mappedBy = "product")
-    private ProductCategory productCategory;
 
     // -------------- Methods --------------
 
@@ -69,10 +66,9 @@ public class Product {
         return "Product{" +
                 "id=" + id +
                 ", skuCode='" + skuCode + '\'' +
-                ", category=" + category +
+                ", category=" + productCategory +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", expiredDate=" + expiredDate +
                 ", price=" + price +
                 ", stock=" + stock +
                 ", createdAt=" + createdAt +

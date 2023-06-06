@@ -3,12 +3,12 @@ package me.chiqors.minimarket_backend.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import me.chiqors.minimarket_backend.util.DateConverter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.UUID;
 
 @Entity
 @Getter @Setter
@@ -34,12 +34,16 @@ public class Account {
     @Column(name = "status")
     private Boolean status;
 
-    @CreationTimestamp
     @Column(name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
+    @Convert(converter = DateConverter.class)
     private Date createdAt;
 
-    @UpdateTimestamp
     @Column(name = "updated_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    @UpdateTimestamp
+    @Convert(converter = DateConverter.class)
     private Date updatedAt;
 
     // -------------- Methods --------------

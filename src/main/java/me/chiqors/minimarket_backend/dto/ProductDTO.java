@@ -20,9 +20,6 @@ public class ProductDTO {
 
     private String description;
 
-    @JsonProperty("expired_date")
-    private String expiredDate;
-
     private Double price;
 
     private Integer stock;
@@ -48,11 +45,10 @@ public class ProductDTO {
 
     // -------------- Constructor --------------
 
-    public ProductDTO(String skuCode, String name, String description, String expiredDate, Double price, Integer stock, String slug, Date createdAt, Date updatedAt, ProductCategoryDTO category) {
+    public ProductDTO(String skuCode, String name, String description, Double price, Integer stock, String slug, Date createdAt, Date updatedAt, ProductCategoryDTO category) {
         this.skuCode = skuCode;
         this.name = name;
         this.description = description;
-        this.expiredDate = expiredDate;
         this.price = price;
         this.stock = stock;
         this.slug = slug;
