@@ -3,6 +3,8 @@ package me.chiqors.minimarket_backend.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -14,8 +16,8 @@ import java.util.UUID;
 @Table(name = "accounts")
 public class Account {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID uuid;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "username")
     private String username;
@@ -32,9 +34,11 @@ public class Account {
     @Column(name = "status")
     private Boolean status;
 
+    @CreationTimestamp
     @Column(name = "created_at")
     private Date createdAt;
 
+    @UpdateTimestamp
     @Column(name = "updated_at")
     private Date updatedAt;
 
@@ -43,7 +47,7 @@ public class Account {
     @Override
     public String toString() {
         return "Account{" +
-                "uuid=" + uuid +
+                "id=" + id +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +

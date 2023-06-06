@@ -22,9 +22,10 @@ public class TransactionDetailDTO {
     @JsonProperty("snapshot")
     private ProductDTO productDTO;
 
-    public TransactionDetailDTO(String transactionCode, String productSku, Integer quantity) {
+    public TransactionDetailDTO(String transactionCode, String productSku, Integer quantity, ProductDTO productDTO) {
         this.transactionCode = transactionCode;
         this.productSku = productSku;
         this.quantity = quantity;
+        this.productDTO = productDTO;
     }
 }

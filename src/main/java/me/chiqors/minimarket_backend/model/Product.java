@@ -3,6 +3,8 @@ package me.chiqors.minimarket_backend.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -23,10 +25,6 @@ public class Product {
     @JoinColumn(name = "product_category_id")
     private ProductCategory category;
 
-    @ManyToOne
-    @JoinColumn(name = "supplier_id")
-    private Supplier supplier;
-
     @Column(name = "name")
     private String name;
 
@@ -42,12 +40,17 @@ public class Product {
     @Column(name = "stock")
     private Integer stock;
 
-    @Column(name = "is_deleted")
-    private Boolean deleted;
+    @Column(name = "slug")
+    private String slug;
 
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
+
+    @CreationTimestamp
     @Column(name = "created_at")
     private Date createdAt;
 
+    @UpdateTimestamp
     @Column(name = "updated_at")
     private Date updatedAt;
 
@@ -55,9 +58,6 @@ public class Product {
     private Date deletedAt;
 
     // -------------- Out Relationships --------------
-
-    @OneToOne(mappedBy = "product")
-    private ProductImage productImage;
 
     @OneToOne(mappedBy = "product")
     private ProductCategory productCategory;
@@ -70,7 +70,6 @@ public class Product {
                 "id=" + id +
                 ", skuCode='" + skuCode + '\'' +
                 ", category=" + category +
-                ", supplier=" + supplier +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", expiredDate=" + expiredDate +

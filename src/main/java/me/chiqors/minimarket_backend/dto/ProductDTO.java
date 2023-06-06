@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -20,44 +20,44 @@ public class ProductDTO {
 
     private String description;
 
-    private Integer stock;
-
-    private Double price;
-
     @JsonProperty("expired_date")
     private String expiredDate;
 
+    private Double price;
+
+    private Integer stock;
+
+    private String slug;
+
     @JsonIgnore
-    private Boolean deleted;
+    private Boolean isDeleted;
 
     @JsonProperty("created_at")
-    private String createdAt;
+    private Date createdAt;
 
     @JsonProperty("updated_at")
-    private String updatedAt;
+    private Date updatedAt;
 
     @JsonIgnore
-    private String deletedAt;
+    private Date deletedAt;
 
     // -------------- Out Relationships --------------
 
     @JsonProperty("product_category")
     private ProductCategoryDTO category;
 
-    @JsonProperty("product_images")
-    private List<ProductImageDTO> productImages;
-
     // -------------- Constructor --------------
 
-    public ProductDTO(String skuCode, ProductCategoryDTO category, String name, String description, int stock, double price, String expiredDate, String createdAt, String updatedAt) {
+    public ProductDTO(String skuCode, String name, String description, String expiredDate, Double price, Integer stock, String slug, Date createdAt, Date updatedAt, ProductCategoryDTO category) {
         this.skuCode = skuCode;
-        this.category = category;
         this.name = name;
         this.description = description;
-        this.stock = stock;
-        this.price = price;
         this.expiredDate = expiredDate;
+        this.price = price;
+        this.stock = stock;
+        this.slug = slug;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.category = category;
     }
 }

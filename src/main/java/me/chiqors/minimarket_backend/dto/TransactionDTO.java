@@ -22,7 +22,7 @@ public class TransactionDTO {
     @JsonProperty("updated_at")
     private String updatedAt;
 
-    private Boolean status;
+    private Integer status;
 
     @JsonProperty("total_products")
     private Integer totalProducts;
@@ -31,20 +31,17 @@ public class TransactionDTO {
 
     private CustomerDTO customer;
 
-    private CouponDTO coupon;
-
     @JsonProperty("detail_transactions")
     private List<TransactionDetailDTO> detailTransactions;
 
-    public TransactionDTO(String transactionCode, String createdAt, String updatedAt, Boolean status, Integer totalProducts, EmployeeDTO employeeDTO, CustomerDTO customerDTO, CouponDTO couponDTO, List<TransactionDetailDTO> detailTransactions) {
+    public TransactionDTO(String transactionCode, String createdAt, String updatedAt, Integer status, Integer totalProducts, EmployeeDTO employee, CustomerDTO customer, List<TransactionDetailDTO> detailTransactions) {
         this.transactionCode = transactionCode;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.status = status;
         this.totalProducts = totalProducts;
-        this.employee = employeeDTO;
-        this.customer = customerDTO;
-        this.coupon = couponDTO;
+        this.employee = employee;
+        this.customer = customer;
         this.detailTransactions = detailTransactions;
     }
 }

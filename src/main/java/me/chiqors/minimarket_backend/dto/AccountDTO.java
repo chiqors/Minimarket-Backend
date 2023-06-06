@@ -5,13 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
 public class AccountDTO {
     @JsonIgnore
-    private UUID id;
+    private Long id;
 
     private String username;
 
@@ -22,12 +22,12 @@ public class AccountDTO {
     private Integer role;
 
     @JsonProperty("created_at")
-    private String createdAt;
+    private Date createdAt;
 
     @JsonProperty("updated_at")
-    private String updatedAt;
+    private Date updatedAt;
 
-    public AccountDTO(String username, String email, Boolean status, Integer role, String createdAt, String updatedAt) {
+    public AccountDTO(String username, String email, Boolean status, Integer role, Date createdAt, Date updatedAt) {
         this.username = username;
         this.email = email;
         this.status = status;

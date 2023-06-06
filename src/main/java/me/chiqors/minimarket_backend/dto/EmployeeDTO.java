@@ -1,33 +1,26 @@
 package me.chiqors.minimarket_backend.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import me.chiqors.minimarket_backend.dto.parent.PersonDTO;
 
-@Data
+@Getter @Setter
 @NoArgsConstructor
-public class EmployeeDTO {
-    @JsonIgnore
-    private Long id;
-
-    private String name;
-
-    private String address;
-
-    @JsonProperty("phone_number")
-    private String phoneNumber;
-
-    private Boolean status;
-
-    @JsonProperty("created_at")
-    private String createdAt;
-
-    @JsonProperty("updated_at")
-    private String updatedAt;
+public class EmployeeDTO extends PersonDTO {
+    @JsonProperty("employee_code")
+    private String employeeCode;
 
     // Additional Properties
 
     @JsonProperty("account")
     private AccountDTO account;
+
+    // Methods
+
+    public EmployeeDTO(String employeeCode, AccountDTO account) {
+        this.employeeCode = employeeCode;
+        this.account = account;
+    }
 }

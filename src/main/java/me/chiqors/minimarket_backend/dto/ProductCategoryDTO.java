@@ -5,30 +5,34 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @NoArgsConstructor
 public class ProductCategoryDTO {
     @JsonIgnore
     private long id;
 
-    private String name;
-
-    @JsonProperty("created_at")
-    private String createdAt;
-
-    @JsonProperty("updated_at")
-    private String updatedAt;
-
     private String slug;
+
+    private String name;
 
     @JsonProperty("sku_created")
     private String skuCreated;
 
-    public ProductCategoryDTO(String name, String createdAt, String updatedAt, String slug, String skuCreated) {
+    @JsonProperty("created_at")
+    private Date createdAt;
+
+    @JsonProperty("updated_at")
+    private Date updatedAt;
+
+    // Methods
+
+    public ProductCategoryDTO(String slug, String name, String skuCreated, Date createdAt, Date updatedAt) {
+        this.slug = slug;
         this.name = name;
+        this.skuCreated = skuCreated;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.slug = slug;
-        this.skuCreated = skuCreated;
     }
 }
