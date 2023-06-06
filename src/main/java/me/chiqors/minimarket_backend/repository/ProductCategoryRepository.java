@@ -13,4 +13,8 @@ public interface ProductCategoryRepository extends JpaRepository<ProductCategory
     Page<ProductCategory> findAllByOrderByCreatedAtDesc(Pageable pageable);
 
     ProductCategory findBySlug(String slug);
+
+    ProductCategory findByName(String name);
+
+    ProductCategory findBySkuCreated(String skuCreated);
 }

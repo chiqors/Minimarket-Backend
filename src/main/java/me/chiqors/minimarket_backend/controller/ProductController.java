@@ -24,28 +24,4 @@ public class ProductController {
         JSONResponse jsonResponse = new JSONResponse(200, "Products retrieved", null, null);
         return ResponseEntity.ok(jsonResponse);
     }
-
-    /**
-     * Retrieves a product based on its slug.
-     * @param slug    The slug of the product to be retrieved.
-     * @return ResponseEntity containing a JSONResponse and an HTTP status code.
-     */
-    @GetMapping("/product/get/{slug}")
-    public ResponseEntity<JSONResponse> getProductBySlug(@PathVariable String slug) {
-        // return sample response
-        JSONResponse jsonResponse = new JSONResponse(200, "Product retrieved", null, null);
-        return ResponseEntity.ok(jsonResponse);
-    }
-
-    /**
-     * Retrieves a product based on its sku code.
-     * @param sku_code    The sku code of the product to be retrieved.
-     * @return ResponseEntity containing a JSONResponse and an HTTP status code.
-     */
-    @GetMapping("/product/{sku_code}")
-    public ResponseEntity<JSONResponse> getProductBySkuCode(@PathVariable String sku_code) {
-        // return sample response
-        JSONResponse jsonResponse = new JSONResponse(200, "Product retrieved", null, null);
-        return ResponseEntity.ok(jsonResponse);
-    }
 }

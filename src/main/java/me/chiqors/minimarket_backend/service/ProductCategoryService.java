@@ -54,7 +54,47 @@ public class ProductCategoryService {
     public ProductCategoryDTO getProductCategoryBySlug(String slug) {
         ProductCategory productCategory = productCategoryRepository.findBySlug(slug);
 
+        if (productCategory == null) {
+            return null;
+        }
+
         return convertToDTO(productCategory);
+    }
+
+    /**
+     * Validates a product category by its name.
+     *
+     * @param name the name
+     * @return true if the product category exists, false otherwise
+     */
+    public boolean validateProductCategoryByName(String name) {
+        ProductCategory productCategory = productCategoryRepository.findByName(name);
+
+        return productCategory != null;
+    }
+
+    /**
+     * Validates a product category by its skuCreated.
+     *
+     * @param skuCreated the skuCreated
+     * @return true if the product category exists, false otherwise
+     */
+    public boolean validateProductCategoryBySkuCreated(String skuCreated) {
+        ProductCategory productCategory = productCategoryRepository.findBySkuCreated(skuCreated);
+
+        return productCategory != null;
+    }
+
+    /**
+     * Validates a product category by its slug.
+     *
+     * @param slug the slug
+     * @return true if the product category exists, false otherwise
+     */
+    public boolean validateProductCategoryBySlug(String slug) {
+        ProductCategory productCategory = productCategoryRepository.findBySlug(slug);
+
+        return productCategory != null;
     }
 
     /**
@@ -66,13 +106,11 @@ public class ProductCategoryService {
     public ProductCategoryDTO createProductCategory(ProductCategoryDTO productCategory) {
         // convert name into slug
         String slug = productCategory.getName().toLowerCase().replaceAll("\\s+", "-");
-        // convert skuCreated into uppercase
-        String skuCreated = productCategory.getSkuCreated().toUpperCase();
 
         ProductCategory newProductCategory = new ProductCategory(
                 slug,
                 productCategory.getName(),
-                skuCreated
+                productCategory.getSkuCreated()
         );
 
         newProductCategory = productCategoryRepository.save(newProductCategory);
@@ -95,16 +133,5 @@ public class ProductCategoryService {
         existingProductCategory = productCategoryRepository.save(existingProductCategory);
 
         return convertToDTO(existingProductCategory);
-    }
-
-    /**
-     * Deletes a product category.
-     *
-     * @param productCategory the ProductCategoryDTO
-     */
-    public void deleteProductCategory(ProductCategoryDTO productCategory) {
-        ProductCategory existingProductCategory = productCategoryRepository.findBySlug(productCategory.getSlug());
-
-        productCategoryRepository.delete(existingProductCategory);
     }
 }
