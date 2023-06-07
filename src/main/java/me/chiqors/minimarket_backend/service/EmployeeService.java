@@ -77,6 +77,46 @@ public class EmployeeService {
     }
 
     /**
+     * Find Employee By Username
+     *
+     * @param username Username to be searched
+     * @return boolean
+     */
+    public boolean findByUsername(String username) {
+        return accountRepository.findByUsername(username) != null;
+    }
+
+    /**
+     * Find Employee By Email
+     *
+     * @param email Email to be searched
+     * @return boolean
+     */
+    public boolean findByEmail(String email) {
+        return accountRepository.findByEmail(email) != null;
+    }
+
+    /**
+     * Find Employee By Phone Number
+     *
+     * @param phoneNumber Phone Number to be searched
+     * @return boolean
+     */
+    public boolean isPhoneNumberExist(String phoneNumber) {
+        return employeeRepository.findByPhoneNumber(phoneNumber) != null;
+    }
+
+    /**
+     * Check if Employee Code is Exist
+     *
+     * @param employeeCode Employee Code to be checked
+     * @return boolean true if exist, false if not exist
+     */
+    public boolean isEmployeeCodeExist(String employeeCode) {
+        return employeeRepository.findByEmployeeCode(employeeCode) != null;
+    }
+
+    /**
      * Create Employee with Account
      *
      * @param employeeDTO EmployeeDTO to be created
@@ -86,6 +126,9 @@ public class EmployeeService {
     public EmployeeDTO createEmployee(EmployeeDTO employeeDTO) {
         // generate employee code
         String employeeCode = "EMP" + System.currentTimeMillis();
+
+        // convert into MD5 hash
+        employeeDTO.getAccount().setPassword(Helper.getMD5hash(employeeDTO.getAccount().getPassword()));
 
         // create account
         Account account = new Account(employeeDTO.getAccount().getUsername(), employeeDTO.getAccount().getEmail(), employeeDTO.getAccount().getRole(), true);

@@ -42,6 +42,6 @@ public class PersonDTO {
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+
     }
 }
