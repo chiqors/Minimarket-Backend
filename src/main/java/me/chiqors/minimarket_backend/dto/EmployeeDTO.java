@@ -1,9 +1,11 @@
 package me.chiqors.minimarket_backend.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import me.chiqors.minimarket_backend.dto.form.AccountFormDTO;
 import me.chiqors.minimarket_backend.dto.parent.PersonDTO;
 
 import java.util.Date;
@@ -18,6 +20,11 @@ public class EmployeeDTO extends PersonDTO {
 
     @JsonProperty("account")
     private AccountDTO account;
+
+    // check if AccountCreateDTO is not null
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("account_form")
+    private AccountFormDTO accountForm;
 
     // Methods
 

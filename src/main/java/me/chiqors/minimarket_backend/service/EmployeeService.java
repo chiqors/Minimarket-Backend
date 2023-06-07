@@ -128,10 +128,11 @@ public class EmployeeService {
         String employeeCode = "EMP" + System.currentTimeMillis();
 
         // convert into MD5 hash
-        employeeDTO.getAccount().setPassword(Helper.getMD5hash(employeeDTO.getAccount().getPassword()));
+        employeeDTO.getAccountForm().setPassword(Helper.getMD5hash(employeeDTO.getAccountForm().getPassword()));
 
         // create account
-        Account account = new Account(employeeDTO.getAccount().getUsername(), employeeDTO.getAccount().getEmail(), employeeDTO.getAccount().getRole(), true);
+        Account account = new Account(employeeDTO.getAccountForm().getUsername(), employeeDTO.getAccountForm().getEmail(), employeeDTO.getAccountForm().getRole(), true);
+        account.setPassword(employeeDTO.getAccountForm().getPassword());
         accountRepository.save(account);
 
         // create employee

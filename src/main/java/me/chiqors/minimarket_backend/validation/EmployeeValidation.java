@@ -23,32 +23,32 @@ public class EmployeeValidation {
     public List<String> createEmployeeValidation(EmployeeDTO employeeDTO) {
         List<String> errors = new ArrayList<>();
 
-        if (employeeDTO.getAccount() != null) {
-            if (employeeDTO.getAccount().getUsername() == null) {
+        if (employeeDTO.getAccountForm() != null) {
+            if (employeeDTO.getAccountForm().getUsername() == null) {
                 errors.add("Username is required");
-            } else if (employeeDTO.getAccount().getUsername().length() < 3 || employeeDTO.getAccount().getUsername().length() > 20) {
+            } else if (employeeDTO.getAccountForm().getUsername().length() < 3 || employeeDTO.getAccountForm().getUsername().length() > 20) {
                 errors.add("Username must be at least 3 characters and maximum 20 characters");
-            } else if (employeeService.findByUsername(employeeDTO.getAccount().getUsername())) {
+            } else if (employeeService.findByUsername(employeeDTO.getAccountForm().getUsername())) {
                 errors.add("Username already exists");
             }
 
-            if (employeeDTO.getAccount().getPassword() == null) {
+            if (employeeDTO.getAccountForm().getPassword() == null) {
                 errors.add("Password is required");
-            } else if (employeeDTO.getAccount().getPassword().length() < 3 || employeeDTO.getAccount().getPassword().length() > 20) {
+            } else if (employeeDTO.getAccountForm().getPassword().length() < 3 || employeeDTO.getAccountForm().getPassword().length() > 20) {
                 errors.add("Password must be at least 3 characters and maximum 20 characters");
             }
 
-            if (employeeDTO.getAccount().getEmail() == null) {
+            if (employeeDTO.getAccountForm().getEmail() == null) {
                 errors.add("Email is required");
-            } else if (employeeDTO.getAccount().getEmail().length() < 3 || employeeDTO.getAccount().getEmail().length() > 50) {
+            } else if (employeeDTO.getAccountForm().getEmail().length() < 3 || employeeDTO.getAccountForm().getEmail().length() > 50) {
                 errors.add("Email must be at least 3 characters and maximum 50 characters");
-            } else if (employeeService.findByEmail(employeeDTO.getAccount().getEmail())) {
+            } else if (employeeService.findByEmail(employeeDTO.getAccountForm().getEmail())) {
                 errors.add("Email already exists");
             }
 
-            if (employeeDTO.getAccount().getRole() == null) {
+            if (employeeDTO.getAccountForm().getRole() == null) {
                 errors.add("Role is required");
-            } else if (employeeDTO.getAccount().getRole() != 1 && employeeDTO.getAccount().getRole() != 2) {
+            } else if (employeeDTO.getAccountForm().getRole() != 1 && employeeDTO.getAccountForm().getRole() != 2) {
                 errors.add("Invalid role");
             }
         } else {
@@ -114,7 +114,7 @@ public class EmployeeValidation {
         List<String> errors = new ArrayList<>();
 
         // at least one field must be filled: password, email, role, name, gender, birthDate, address, phoneNumber
-        if (employeeDTO.getAccount() == null && employeeDTO.getName() == null && employeeDTO.getGender() == null && employeeDTO.getBirthDate() == null && employeeDTO.getAddress() == null && employeeDTO.getPhoneNumber() == null) {
+        if (employeeDTO.getAccountForm() == null && employeeDTO.getName() == null && employeeDTO.getGender() == null && employeeDTO.getBirthDate() == null && employeeDTO.getAddress() == null && employeeDTO.getPhoneNumber() == null) {
             errors.add("At least one field must be filled: password, email, role, name, gender, birthDate, address, phoneNumber");
         }
 
@@ -124,22 +124,41 @@ public class EmployeeValidation {
             errors.add("Employee code doesn't exist");
         }
 
-        if (employeeDTO.getName() == null) {
-            errors.add("Name is required");
-        } else if (employeeDTO.getName().length() < 3) {
-            errors.add("Name must be at least 3 characters");
+        if (employeeDTO.getAccountForm() != null) {
+            if (employeeDTO.getAccountForm().getPassword() != null) {
+                if (employeeDTO.getAccountForm().getPassword().length() < 3 || employeeDTO.getAccountForm().getPassword().length() > 20) {
+                    errors.add("Password must be at least 3 characters and maximum 20 characters");
+                }
+            }
+
+            if (employeeDTO.getAccountForm().getEmail() != null) {
+                if (employeeDTO.getAccountForm().getEmail().length() < 3 || employeeDTO.getAccountForm().getEmail().length() > 50) {
+                    errors.add("Email must be at least 3 characters and maximum 50 characters");
+                } else if (employeeService.findByEmail(employeeDTO.getAccountForm().getEmail())) {
+                    errors.add("Email already exists");
+                }
+            }
+
+            if (employeeDTO.getAccountForm().getRole() != null) {
+                if (employeeDTO.getAccountForm().getRole() != 1 && employeeDTO.getAccountForm().getRole() != 2) {
+                    errors.add("Invalid role");
+                }
+            }
         }
 
-        // gender: 'M' or 'F'
-        if (employeeDTO.getGender() == null) {
-            errors.add("Gender is required");
-        } else if (!employeeDTO.getGender().equals("M") && !employeeDTO.getGender().equals("F")) {
-            errors.add("Invalid gender");
+        if (employeeDTO.getName() != null) {
+            if (employeeDTO.getName().length() < 3) {
+                errors.add("Name must be at least 3 characters");
+            }
         }
 
-        if (employeeDTO.getBirthDate() == null) {
-            errors.add("Birth date is required");
-        } else {
+        if (employeeDTO.getGender() != null) {
+            if (!employeeDTO.getGender().equals("M") && !employeeDTO.getGender().equals("F")) {
+                errors.add("Invalid gender");
+            }
+        }
+
+        if (employeeDTO.getBirthDate() != null) {
             Date currentDate = new Date(); // Current date
             Date birthDate = employeeDTO.getBirthDate(); // Customer's birthdate
 
@@ -154,20 +173,20 @@ public class EmployeeValidation {
             }
         }
 
-        if (employeeDTO.getAddress() == null) {
-            errors.add("Address is required");
-        } else if (employeeDTO.getAddress().length() < 3) {
-            errors.add("Address must be at least 3 characters");
+        if (employeeDTO.getAddress() != null) {
+            if (employeeDTO.getAddress().length() < 3) {
+                errors.add("Address must be at least 3 characters");
+            }
         }
 
-        if (employeeDTO.getPhoneNumber() == null) {
-            errors.add("Phone number is required");
-        } else if (employeeDTO.getPhoneNumber().length() < 3 || employeeDTO.getPhoneNumber().length() > 15) {
-            errors.add("Phone number must be between 3 and 15 characters");
-        } else if (!employeeDTO.getPhoneNumber().matches("^[0-9]*$")) {
-            errors.add("Phone number must be numeric");
-        } else if (employeeService.isPhoneNumberExist(employeeDTO.getPhoneNumber())) {
-            errors.add("Phone number already exist");
+        if (employeeDTO.getPhoneNumber() != null) {
+            if (employeeDTO.getPhoneNumber().length() < 3 || employeeDTO.getPhoneNumber().length() > 15) {
+                errors.add("Phone number must be between 3 and 15 characters");
+            } else if (!employeeDTO.getPhoneNumber().matches("^[0-9]*$")) {
+                errors.add("Phone number must be numeric");
+            } else if (employeeService.isPhoneNumberExist(employeeDTO.getPhoneNumber())) {
+                errors.add("Phone number already exist");
+            }
         }
 
         return errors;
