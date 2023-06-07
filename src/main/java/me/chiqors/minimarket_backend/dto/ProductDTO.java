@@ -41,11 +41,11 @@ public class ProductDTO {
     // -------------- Out Relationships --------------
 
     @JsonProperty("product_category")
-    private ProductCategoryDTO category;
+    private ProductCategoryDTO productCategory;
 
     // -------------- Constructor --------------
 
-    public ProductDTO(String skuCode, String name, String description, Double price, Integer stock, String slug, Date createdAt, Date updatedAt, ProductCategoryDTO category) {
+    public ProductDTO(String skuCode, String name, String description, Double price, Integer stock, String slug, Date createdAt, Date updatedAt, ProductCategoryDTO productCategory) {
         this.skuCode = skuCode;
         this.name = name;
         this.description = description;
@@ -54,6 +54,6 @@ public class ProductDTO {
         this.slug = slug;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.category = category;
+        this.productCategory = productCategory;
     }
 }

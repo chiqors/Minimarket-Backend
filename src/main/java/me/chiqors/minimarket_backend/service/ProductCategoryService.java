@@ -121,17 +121,21 @@ public class ProductCategoryService {
     /**
      * Updates a product category.
      *
-     * @param productCategory the ProductCategoryDTO
+     * @param productCategoryDTO the ProductCategoryDTO
      * @return the updated ProductCategoryDTO
      */
-    public ProductCategoryDTO updateProductCategory(ProductCategoryDTO productCategory) {
-        ProductCategory existingProductCategory = productCategoryRepository.findBySlug(productCategory.getSlug());
+    public ProductCategoryDTO updateProductCategory(ProductCategoryDTO productCategoryDTO) {
+        ProductCategory existingProductCategory = productCategoryRepository.findBySlug(productCategoryDTO.getSlug());
+        if (existingProductCategory != null) {
+            if (productCategoryDTO.getName() != null) {
+                existingProductCategory.setName(productCategoryDTO.getName());
+            }
 
-        existingProductCategory.setName(productCategory.getName());
-        existingProductCategory.setSkuCreated(productCategory.getSkuCreated());
+            productCategoryRepository.save(existingProductCategory);
 
-        existingProductCategory = productCategoryRepository.save(existingProductCategory);
-
-        return convertToDTO(existingProductCategory);
+            return convertToDTO(existingProductCategory);
+        } else {
+            return null;
+        }
     }
 }

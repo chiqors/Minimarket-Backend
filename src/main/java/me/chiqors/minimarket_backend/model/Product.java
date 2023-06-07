@@ -61,6 +61,17 @@ public class Product {
 
     // -------------- Methods --------------
 
+    public Product(String skuCode, ProductCategory productCategory, String name, String description, Double price, Integer stock, String slug, Boolean isDeleted) {
+        this.skuCode = skuCode;
+        this.productCategory = productCategory;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.stock = stock;
+        this.slug = slug;
+        this.isDeleted = isDeleted;
+    }
+
     @Override
     public String toString() {
         return "Product{" +

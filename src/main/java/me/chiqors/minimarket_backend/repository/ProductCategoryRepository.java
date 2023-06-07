@@ -17,4 +17,6 @@ public interface ProductCategoryRepository extends JpaRepository<ProductCategory
     ProductCategory findByName(String name);
 
     ProductCategory findBySkuCreated(String skuCreated);
+
+    boolean existsBySkuCreated(String skuCreated);
 }
