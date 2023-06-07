@@ -65,6 +65,18 @@ public class CustomerService {
     }
 
     /**
+     * Check if customer code exist
+     *
+     * @param customerCode Customer code
+     * @return boolean
+     */
+    public boolean isPhoneNumberExist(String phoneNumber) {
+        Customer customer = customerRepository.findByPhoneNumber(phoneNumber);
+
+        return customer != null;
+    }
+
+    /**
      * Create new customer
      *
      * @param customerDTO CustomerDTO object

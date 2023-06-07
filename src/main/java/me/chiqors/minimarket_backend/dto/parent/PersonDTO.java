@@ -21,7 +21,7 @@ public class PersonDTO {
     private String gender;
 
     @JsonProperty("birth_date")
-    private String birthDate;
+    private Date birthDate;
 
     @JsonProperty("address")
     private String address;
@@ -35,7 +35,7 @@ public class PersonDTO {
     @JsonProperty("updated_at")
     private Date updatedAt;
 
-    public PersonDTO(String name, String gender, String birthDate, String address, String phoneNumber) {
+    public PersonDTO(String name, String gender, Date birthDate, String address, String phoneNumber) {
         this.name = name;
         this.gender = gender;
         this.birthDate = birthDate;

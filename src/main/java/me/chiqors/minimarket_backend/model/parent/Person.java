@@ -26,7 +26,7 @@ public class Person {
     private String gender;
 
     @Column(name = "birth_date")
-    private String birthDate;
+    private Date birthDate;
 
     @Column(name = "address")
     private String address;
@@ -46,7 +46,7 @@ public class Person {
     @Convert(converter = DateConverter.class)
     private Date updatedAt;
 
-    public Person(String name, String gender, String birthDate, String address, String phoneNumber) {
+    public Person(String name, String gender, Date birthDate, String address, String phoneNumber) {
         this.name = name;
         this.gender = gender;
         this.birthDate = birthDate;
