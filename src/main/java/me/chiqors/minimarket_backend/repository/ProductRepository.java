@@ -12,4 +12,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Page<Product> findByIsDeletedIsFalseOrderByCreatedAtDesc(Pageable pageable);
     Product findBySkuCodeAndIsDeletedIsFalse(String skuCode);
     Product findBySlugAndIsDeletedIsFalse(String slug);
+
+    boolean existsByName(String name);
+
+    boolean existsBySlug(String slug);
 }
