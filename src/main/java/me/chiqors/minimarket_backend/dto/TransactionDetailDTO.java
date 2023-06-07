@@ -20,12 +20,12 @@ public class TransactionDetailDTO {
     private Integer quantity;
 
     @JsonProperty("snapshot")
-    private ProductDTO productDTO;
+    private ProductDTO product;
 
-    public TransactionDetailDTO(String transactionCode, String productSku, Integer quantity, ProductDTO productDTO) {
+    public TransactionDetailDTO(String transactionCode, String productSku, Integer quantity, ProductDTO product) {
         this.transactionCode = transactionCode;
         this.productSku = productSku;
         this.quantity = quantity;
-        this.productDTO = productDTO;
+        this.product = product;
     }
 }

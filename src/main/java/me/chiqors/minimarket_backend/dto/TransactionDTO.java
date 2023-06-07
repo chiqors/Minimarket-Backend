@@ -27,21 +27,25 @@ public class TransactionDTO {
     @JsonProperty("total_products")
     private Integer totalProducts;
 
+    @JsonProperty("total_price")
+    private Double totalPrice;
+
     private EmployeeDTO employee;
 
     private CustomerDTO customer;
 
-    @JsonProperty("detail_transactions")
-    private List<TransactionDetailDTO> detailTransactions;
+    @JsonProperty("transaction_details")
+    private List<TransactionDetailDTO> transactionDetails;
 
-    public TransactionDTO(String transactionCode, String createdAt, String updatedAt, Integer status, Integer totalProducts, EmployeeDTO employee, CustomerDTO customer, List<TransactionDetailDTO> detailTransactions) {
+    public TransactionDTO(String transactionCode, String createdAt, String updatedAt, Integer status, Integer totalProducts, Double totalPrice, EmployeeDTO employee, CustomerDTO customer, List<TransactionDetailDTO> transactionDetails) {
         this.transactionCode = transactionCode;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.status = status;
         this.totalProducts = totalProducts;
+        this.totalPrice = totalPrice;
         this.employee = employee;
         this.customer = customer;
-        this.detailTransactions = detailTransactions;
+        this.transactionDetails = transactionDetails;
     }
 }

@@ -1,16 +1,17 @@
 package me.chiqors.minimarket_backend.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import me.chiqors.minimarket_backend.dto.*;
 import me.chiqors.minimarket_backend.model.*;
-import me.chiqors.minimarket_backend.repository.CustomerRepository;
-import me.chiqors.minimarket_backend.repository.EmployeeRepository;
-import me.chiqors.minimarket_backend.repository.ProductRepository;
-import me.chiqors.minimarket_backend.repository.TransactionRepository;
+import me.chiqors.minimarket_backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,8 @@ import java.util.List;
 public class TransactionService {
     @Autowired
     private TransactionRepository transactionRepository;
+    @Autowired
+    private TransactionDetailRepository transactionDetailRepository;
     @Autowired
     private ProductRepository productRepository;
     @Autowired
@@ -43,6 +46,7 @@ public class TransactionService {
                 transaction.getUpdatedAt().toString(),
                 transaction.getStatus(),
                 transaction.getTotalProducts(),
+                transaction.getTotalPrice(),
                 employeeDTO,
                 customerDTO,
                 transactionDetailDTOList
@@ -187,5 +191,118 @@ public class TransactionService {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Get transaction by employee code
+     *
+     * @param customerCode Customer code of transaction
+     * @return Boolean value of transaction exists or not
+     */
+    public boolean isCustomerExists(String customerCode) {
+        Customer customer = customerRepository.findByCustomerCode(customerCode);
+        return customer != null;
+    }
+
+    /**
+     * Get transaction by employee code
+     *
+     * @param employeeCode Employee code of transaction
+     * @return Boolean value of transaction exists or not
+     */
+    public boolean isEmployeeExists(String employeeCode) {
+        Employee employee = employeeRepository.findByEmployeeCode(employeeCode);
+        return employee != null;
+    }
+
+    /**
+     * Get transaction by product sku
+     *
+     * @param productSku Product sku of transaction
+     * @return Boolean value of transaction exists or not
+     */
+    public boolean isProductExists(String productSku) {
+        Product product = productRepository.findBySkuCode(productSku);
+        return product != null;
+    }
+
+    /**
+     * Get transaction by product sku
+     *
+     * @param productSku Product sku of transaction
+     * @param quantity Quantity of product
+     * @return Boolean value of product quantity enough or not
+     */
+    public boolean isProductQuantityEnough(String productSku, Integer quantity) {
+        Product product = productRepository.findBySkuCode(productSku);
+        return product.getStock() >= quantity;
+    }
+
+    /**
+     * Create new transaction
+     *
+     * @param transactionDTO TransactionDTO object
+     * @return TransactionDTO object
+     */
+    @Transactional
+    public TransactionDTO createTransaction(TransactionDTO transactionDTO) {
+        // generate transaction code
+        String transactionCode = "TRX-" + System.currentTimeMillis();
+
+        Transaction transaction = new Transaction();
+        transaction.setTransactionCode(transactionCode);
+        transaction.setStatus(1);
+
+        Employee employee = employeeRepository.findByEmployeeCode(transactionDTO.getEmployee().getEmployeeCode());
+        transaction.setEmployee(employee);
+
+        Customer customer = customerRepository.findByCustomerCode(transactionDTO.getCustomer().getCustomerCode());
+        transaction.setCustomer(customer);
+
+        List<TransactionDetail> transactionDetailList = new ArrayList<>();
+        int totalProducts = 0;
+        double totalPrice = 0;
+        for (TransactionDetailDTO td : transactionDTO.getTransactionDetails()) {
+            TransactionDetail transactionDetail = new TransactionDetail();
+            transactionDetail.setQuantity(td.getQuantity());
+            totalProducts += td.getQuantity();
+
+            Product product = productRepository.findBySkuCode(td.getProductSku());
+            transactionDetail.setProduct(product);
+
+            transactionDetail.setTransaction(transaction);
+
+            // update price
+            totalPrice += product.getPrice() * td.getQuantity();
+
+            // update stock
+            product.setStock(product.getStock() - td.getQuantity());
+
+            // create snapshot of product to JSON Format
+            ObjectMapper objectMapper = new ObjectMapper();
+            String productSnapshot = null;
+            try {
+                productSnapshot = objectMapper.writeValueAsString(product);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+            transactionDetail.setSnapshot(productSnapshot);
+
+            transactionDetailList.add(transactionDetail);
+
+            // Save the transaction detail to the database
+            transactionDetailRepository.save(transactionDetail);
+
+            // Save the updated product stock to the database
+            productRepository.save(product);
+        }
+
+        transaction.setTotalPrice(totalPrice);
+        transaction.setTotalProducts(totalProducts);
+        transaction.setTransactionDetails(transactionDetailList);
+
+        Transaction newTransaction = transactionRepository.save(transaction);
+
+        return convertToTransactionDTO(newTransaction);
     }
 }
