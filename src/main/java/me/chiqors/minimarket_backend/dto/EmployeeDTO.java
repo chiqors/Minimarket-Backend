@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import me.chiqors.minimarket_backend.dto.parent.PersonDTO;
 
+import java.util.Date;
+
 @Getter @Setter
 @NoArgsConstructor
 public class EmployeeDTO extends PersonDTO {
@@ -19,7 +21,8 @@ public class EmployeeDTO extends PersonDTO {
 
     // Methods
 
-    public EmployeeDTO(String employeeCode, AccountDTO account) {
+    public EmployeeDTO(String employeeCode, AccountDTO account, String name, String gender, Date birthdate, String address, String phoneNumber, Date createdAt, Date updatedAt) {
+        super(name, gender, birthdate, address, phoneNumber, createdAt, updatedAt);
         this.employeeCode = employeeCode;
         this.account = account;
     }

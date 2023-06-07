@@ -48,6 +48,13 @@ public class Account {
 
     // -------------- Methods --------------
 
+    public Account(String username, String email, Integer role, Boolean status) {
+        this.username = username;
+        this.email = email;
+        this.role = role;
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "Account{" +

@@ -15,6 +15,9 @@ public class AccountDTO {
 
     private String username;
 
+    @JsonIgnore
+    private String password;
+
     private String email;
 
     private Boolean status;
