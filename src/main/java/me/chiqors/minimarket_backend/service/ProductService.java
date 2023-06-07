@@ -88,8 +88,11 @@ public class ProductService {
      */
     public ProductDTO getProductBySkuCode(String skuCode) {
         Product product = productRepository.findBySkuCodeAndIsDeletedIsFalse(skuCode);
-
-        return convertToProductDTO(product);
+        if (product != null) {
+            return convertToProductDTO(product);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -100,8 +103,11 @@ public class ProductService {
      */
     public ProductDTO getProductBySlug(String slug) {
         Product product = productRepository.findBySlugAndIsDeletedIsFalse(slug);
-
-        return convertToProductDTO(product);
+        if (product != null) {
+            return convertToProductDTO(product);
+        } else {
+            return null;
+        }
     }
 
     /**

@@ -83,7 +83,13 @@ public class CustomerValidation {
 
         // at least one field must be filled: name, gender, birthdate, address, phone number
         if (customerDTO.getName() == null && customerDTO.getGender() == null && customerDTO.getBirthDate() == null && customerDTO.getAddress() == null && customerDTO.getPhoneNumber() == null) {
-            errors.add("At least one field must be filled");
+            errors.add("At least one field must be filled: name, gender, birthdate, address, phone number");
+        }
+
+        if (customerDTO.getCustomerCode() == null) {
+            errors.add("Customer code is required");
+        } else if (!customerService.isCustomerCodeExist(customerDTO.getCustomerCode())) {
+            errors.add("Customer code not found");
         }
 
         if (customerDTO.getName() != null && customerDTO.getName().length() < 3) {
@@ -113,12 +119,14 @@ public class CustomerValidation {
             errors.add("Address must be at least 3 characters");
         }
 
-        if (customerDTO.getPhoneNumber() != null && customerDTO.getPhoneNumber().length() < 3 || customerDTO.getPhoneNumber().length() > 15) {
-            errors.add("Phone number must be between 3 and 15 characters");
-        } else if (!customerDTO.getPhoneNumber().matches("^[0-9]*$")) {
-            errors.add("Phone number must be numeric");
-        } else if (customerService.isPhoneNumberExist(customerDTO.getPhoneNumber())) {
-            errors.add("Phone number already exist");
+        if (customerDTO.getPhoneNumber() != null) {
+            if (customerDTO.getPhoneNumber().length() < 3 || customerDTO.getPhoneNumber().length() > 15) {
+                errors.add("Phone number must be between 3 and 15 characters");
+            } else if (!customerDTO.getPhoneNumber().matches("^[0-9]*$")) {
+                errors.add("Phone number must be numeric");
+            } else if (customerService.isPhoneNumberExist(customerDTO.getPhoneNumber())) {
+                errors.add("Phone number already exist");
+            }
         }
 
         return errors;

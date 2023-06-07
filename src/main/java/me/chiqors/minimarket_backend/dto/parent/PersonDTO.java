@@ -35,11 +35,13 @@ public class PersonDTO {
     @JsonProperty("updated_at")
     private Date updatedAt;
 
-    public PersonDTO(String name, String gender, Date birthDate, String address, String phoneNumber) {
+    public PersonDTO(String name, String gender, Date birthDate, String address, String phoneNumber, Date createdAt, Date updatedAt) {
         this.name = name;
         this.gender = gender;
         this.birthDate = birthDate;
         this.address = address;
         this.phoneNumber = phoneNumber;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 }

@@ -27,7 +27,9 @@ public class CustomerService {
                 customer.getGender(),
                 customer.getBirthDate(),
                 customer.getAddress(),
-                customer.getPhoneNumber()
+                customer.getPhoneNumber(),
+                customer.getCreatedAt(),
+                customer.getUpdatedAt()
         );
     }
 
@@ -60,8 +62,23 @@ public class CustomerService {
      */
     public CustomerDTO getCustomerByCustomerCode(String customerCode) {
         Customer customer = customerRepository.findByCustomerCode(customerCode);
+        if (customer != null) {
+            return convertToCustomerDTO(customer);
+        } else {
+            return null;
+        }
+    }
 
-        return convertToCustomerDTO(customer);
+    /**
+     * Check if customer code exist
+     *
+     * @param phoneNumber Customer phone number
+     * @return boolean
+     */
+    public boolean isPhoneNumberExist(String phoneNumber) {
+        Customer customer = customerRepository.findByPhoneNumber(phoneNumber);
+
+        return customer != null;
     }
 
     /**
@@ -70,8 +87,8 @@ public class CustomerService {
      * @param customerCode Customer code
      * @return boolean
      */
-    public boolean isPhoneNumberExist(String phoneNumber) {
-        Customer customer = customerRepository.findByPhoneNumber(phoneNumber);
+    public boolean isCustomerCodeExist(String customerCode) {
+        Customer customer = customerRepository.findByCustomerCode(customerCode);
 
         return customer != null;
     }
