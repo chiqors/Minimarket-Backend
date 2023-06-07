@@ -14,4 +14,9 @@ import javax.persistence.*;
 public class Customer extends Person {
     @Column(name = "customer_code")
     private String customerCode;
+
+    public Customer(String customerCode, String name, String gender, String birthDate, String address, String phoneNumber) {
+        super(name, gender, birthDate, address, phoneNumber);
+        this.customerCode = customerCode;
+    }
 }

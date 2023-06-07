@@ -34,4 +34,12 @@ public class PersonDTO {
 
     @JsonProperty("updated_at")
     private Date updatedAt;
+
+    public PersonDTO(String name, String gender, String birthDate, String address, String phoneNumber) {
+        this.name = name;
+        this.gender = gender;
+        this.birthDate = birthDate;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+    }
 }

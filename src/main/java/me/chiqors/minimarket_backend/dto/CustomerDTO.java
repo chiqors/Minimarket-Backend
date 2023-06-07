@@ -12,9 +12,8 @@ public class CustomerDTO extends PersonDTO {
     @JsonProperty("customer_code")
     private String customerCode;
 
-    // Methods
-
-    public CustomerDTO(String customerCode) {
+    public CustomerDTO(String customerCode, String name, String gender, String birthDate, String address, String phoneNumber) {
+        super(name, gender, birthDate, address, phoneNumber);
         this.customerCode = customerCode;
     }
 }

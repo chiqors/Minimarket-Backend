@@ -45,4 +45,12 @@ public class Person {
     @UpdateTimestamp
     @Convert(converter = DateConverter.class)
     private Date updatedAt;
+
+    public Person(String name, String gender, String birthDate, String address, String phoneNumber) {
+        this.name = name;
+        this.gender = gender;
+        this.birthDate = birthDate;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+    }
 }
