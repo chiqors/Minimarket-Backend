@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class TransactionValidation {
@@ -49,6 +51,8 @@ public class TransactionValidation {
             if (transactionDTO.getTransactionDetails().size() == 0) {
                 errors.add("Transaction details is required");
             } else {
+                Set<String> addedSkus = new HashSet<>();
+
                 for (TransactionDetailDTO transactionDetailDTO : transactionDTO.getTransactionDetails()) {
                     if (transactionDetailDTO.getProductSku() == null) {
                         errors.add("Product SKU Code is required");
@@ -56,6 +60,13 @@ public class TransactionValidation {
                         // Check if product exists
                         if (!transactionService.isProductExists(transactionDetailDTO.getProductSku())) {
                             errors.add("Product with SKU Code " + transactionDetailDTO.getProductSku() + " is not found");
+                        } else {
+                            // Check if product has been added (avoid duplicate SKU code)
+                            if (addedSkus.contains(transactionDetailDTO.getProductSku())) {
+                                errors.add("Product with SKU Code " + transactionDetailDTO.getProductSku() + " has already been added to the transaction");
+                            } else {
+                                addedSkus.add(transactionDetailDTO.getProductSku());
+                            }
                         }
                     }
 

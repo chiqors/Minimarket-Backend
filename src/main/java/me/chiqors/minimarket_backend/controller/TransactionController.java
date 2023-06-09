@@ -1,15 +1,20 @@
 package me.chiqors.minimarket_backend.controller;
 
 import me.chiqors.minimarket_backend.dto.TransactionDTO;
+import me.chiqors.minimarket_backend.dto.custom.MostPurchasedProductDTO;
+import me.chiqors.minimarket_backend.dto.custom.CustomerPurchasedDTO;
+
 import me.chiqors.minimarket_backend.service.TransactionService;
 import me.chiqors.minimarket_backend.util.JSONResponse;
 import me.chiqors.minimarket_backend.validation.TransactionValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -62,6 +67,104 @@ public class TransactionController {
                 return new ResponseEntity<>(jsonResponse, HttpStatus.FOUND);
             } else {
                 JSONResponse jsonResponse = new JSONResponse(HttpStatus.NOT_FOUND.value(), "Transaction not found", null, null);
+                return new ResponseEntity<>(jsonResponse, HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JSONResponse jsonResponse = new JSONResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal server error", null, null);
+            return new ResponseEntity<>(jsonResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Get a list of transaction and the total of transaction in between date
+     *
+     * @param start_date start date
+     * @param end_date end date
+     * @return ResponseEntity with status code and JSONResponse
+     */
+    @GetMapping("/transactions/date")
+    public ResponseEntity<JSONResponse> getTransactionByDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date start_date, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date end_date) {
+        try {
+            List<TransactionDTO> transactions = transactionService.getTransactionByDate(start_date, end_date);
+            if (transactions.size() > 0) {
+                JSONResponse jsonResponse = new JSONResponse(HttpStatus.FOUND.value(), "Transactions found", transactions, null);
+                return new ResponseEntity<>(jsonResponse, HttpStatus.FOUND);
+            } else {
+                JSONResponse jsonResponse = new JSONResponse(HttpStatus.NOT_FOUND.value(), "Transactions not found", null, null);
+                return new ResponseEntity<>(jsonResponse, HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JSONResponse jsonResponse = new JSONResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal server error", null, null);
+            return new ResponseEntity<>(jsonResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Get the three most bought product
+     *
+     * @return List of MostPurchaseProductDTO
+     */
+    @GetMapping("/transactions/most-purchase-product")
+    public ResponseEntity<JSONResponse> getMostPurchaseProduct() {
+        try {
+            List<MostPurchasedProductDTO> mostPurchaseProducts = transactionService.getMostPurchasedProduct();
+            if (mostPurchaseProducts.size() > 0) {
+                JSONResponse jsonResponse = new JSONResponse(HttpStatus.FOUND.value(), "Top 3 Most purchase products found", mostPurchaseProducts, null);
+                return new ResponseEntity<>(jsonResponse, HttpStatus.FOUND);
+            } else {
+                JSONResponse jsonResponse = new JSONResponse(HttpStatus.NOT_FOUND.value(), "Most purchase products not found", null, null);
+                return new ResponseEntity<>(jsonResponse, HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JSONResponse jsonResponse = new JSONResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal server error", null, null);
+            return new ResponseEntity<>(jsonResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Get the list of customer who purchased items from transactions in between date
+     *
+     * @param start_date Start date of transaction
+     * @param end_date End date of transaction
+     * @return List of CustomerPurchasedDTO
+     */
+    @GetMapping("/transactions/customer-purchased")
+    public ResponseEntity<JSONResponse> getCustomerPurchased(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date start_date, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date end_date) {
+        try {
+            List<CustomerPurchasedDTO> customerPurchased = transactionService.getCustomerPurchasedBetweenDate(start_date, end_date);
+            if (customerPurchased.size() > 0) {
+                JSONResponse jsonResponse = new JSONResponse(HttpStatus.FOUND.value(), "Customer purchased found", customerPurchased, null);
+                return new ResponseEntity<>(jsonResponse, HttpStatus.FOUND);
+            } else {
+                JSONResponse jsonResponse = new JSONResponse(HttpStatus.NOT_FOUND.value(), "Customer purchased not found", null, null);
+                return new ResponseEntity<>(jsonResponse, HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JSONResponse jsonResponse = new JSONResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal server error", null, null);
+            return new ResponseEntity<>(jsonResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Get the list of product that often purchased by customer
+     * Desc: User input product skuCode, then the system will return the list of product that often purchased with the input product by customer
+     *
+     * @param skuCode Product skuCode
+     * @return List of MostPurchasedProductDTO
+     */
+    @GetMapping("/transactions/most-purchased-with/{skuCode}")
+    public ResponseEntity<JSONResponse> getMostPurchasedWith(@PathVariable String skuCode) {
+        try {
+            List<MostPurchasedProductDTO> mostPurchasedWith = transactionService.getProductOftenPurchased(skuCode);
+            if (mostPurchasedWith.size() > 0) {
+                JSONResponse jsonResponse = new JSONResponse(HttpStatus.FOUND.value(), "Most purchased with found", mostPurchasedWith, null);
+                return new ResponseEntity<>(jsonResponse, HttpStatus.FOUND);
+            } else {
+                JSONResponse jsonResponse = new JSONResponse(HttpStatus.NOT_FOUND.value(), "Most purchased with not found", null, null);
                 return new ResponseEntity<>(jsonResponse, HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {

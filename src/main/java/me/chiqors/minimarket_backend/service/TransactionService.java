@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.chiqors.minimarket_backend.dto.*;
+import me.chiqors.minimarket_backend.dto.custom.CustomerPurchasedDTO;
+import me.chiqors.minimarket_backend.dto.custom.MostPurchasedProductDTO;
 import me.chiqors.minimarket_backend.model.*;
 import me.chiqors.minimarket_backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -179,6 +182,104 @@ public class TransactionService {
     }
 
     /**
+     * Get a list of transaction and the total of transaction in between date
+     *
+     * @param startDate Start date of transaction
+     * @param endDate End date of transaction
+     */
+    public List<TransactionDTO> getTransactionByDate(Date startDate, Date endDate) {
+        List<Transaction> transactionList = transactionRepository.findByCreatedAtBetween(startDate, endDate);
+        List<TransactionDTO> transactionDTOList = new ArrayList<>();
+
+        for (Transaction transaction : transactionList) {
+            transactionDTOList.add(convertToTransactionDTO(transaction));
+        }
+
+        return transactionDTOList;
+    }
+
+    /**
+     * Get the three most bought product
+     *
+     * @return List of MostPurchaseProductDTO
+     */
+    public List<MostPurchasedProductDTO> getMostPurchasedProduct() {
+        List<Object[]> mostPurchasedProductList = transactionDetailRepository.findMostPurchasedProduct();
+        List<MostPurchasedProductDTO> mostPurchasedProductDTOList = new ArrayList<>();
+
+        for (Object[] mostPurchasedProduct : mostPurchasedProductList) {
+
+            MostPurchasedProductDTO mostPurchasedProductDTO = new MostPurchasedProductDTO(
+                    mostPurchasedProduct[0].toString(),
+                    mostPurchasedProduct[1].toString(),
+                    mostPurchasedProduct[2].toString(),
+                    Integer.parseInt(mostPurchasedProduct[3].toString())
+            );
+
+            mostPurchasedProductDTOList.add(mostPurchasedProductDTO);
+        }
+
+        return mostPurchasedProductDTOList;
+    }
+
+    /**
+     * Get the list of customer who purchased items from transactions in between date
+     *
+     * @param startDate Start date of transaction
+     * @param endDate End date of transaction
+     * @return List of CustomerPurchasedDTO
+     */
+    public List<CustomerPurchasedDTO> getCustomerPurchasedBetweenDate(Date startDate, Date endDate) {
+        // [{c.name, c.customer_code, c.phone_number, c.address, c.gender, c.birth_date, c.created_at, c.updated_at, SUM(t.total_price) AS total_price, COUNT(t.customer_id) AS total_purchased}]
+        List<Object[]> customerPurchasedList = customerRepository.getCustomerByTransactionDate(startDate, endDate);
+        List<CustomerPurchasedDTO> customerPurchasedDTOList = new ArrayList<>();
+
+        for (Object[] customerPurchased : customerPurchasedList) {
+            CustomerPurchasedDTO customerPurchasedDTO = new CustomerPurchasedDTO(
+                    customerPurchased[0].toString(),
+                    customerPurchased[1].toString(),
+                    customerPurchased[2].toString(),
+                    customerPurchased[3].toString(),
+                    customerPurchased[4].toString(),
+                    customerPurchased[5].toString(),
+                    customerPurchased[6].toString(),
+                    customerPurchased[7].toString(),
+                    Double.parseDouble(customerPurchased[8].toString()),
+                    Integer.parseInt(customerPurchased[9].toString())
+            );
+
+            customerPurchasedDTOList.add(customerPurchasedDTO);
+        }
+
+        return customerPurchasedDTOList;
+    }
+
+    /**
+     * Get the list of product that often purchased by customer
+     * Desc: User input product skuCode, then the system will return the list of product that often purchased with the input product by customer
+     *
+     * @param skuCode Product skuCode
+     * @return List of MostPurchasedProductDTO
+     */
+    public List<MostPurchasedProductDTO> getProductOftenPurchased(String skuCode) {
+        List<Object[]> productOftenPurchasedList = transactionDetailRepository.findProductOftenPurchased(skuCode);
+        List<MostPurchasedProductDTO> mostPurchasedProductDTOList = new ArrayList<>();
+
+        for (Object[] productOftenPurchased : productOftenPurchasedList) {
+            MostPurchasedProductDTO mostPurchasedProductDTO = new MostPurchasedProductDTO(
+                    productOftenPurchased[0].toString(),
+                    productOftenPurchased[1].toString(),
+                    productOftenPurchased[2].toString(),
+                    Integer.parseInt(productOftenPurchased[3].toString())
+            );
+
+            mostPurchasedProductDTOList.add(mostPurchasedProductDTO);
+        }
+
+        return mostPurchasedProductDTOList;
+    }
+
+    /**
      * Get transaction by transaction code
      *
      * @param transactionCode Transaction code
@@ -264,6 +365,7 @@ public class TransactionService {
         double totalPrice = 0;
         for (TransactionDetailDTO td : transactionDTO.getTransactionDetails()) {
             TransactionDetail transactionDetail = new TransactionDetail();
+
             transactionDetail.setQuantity(td.getQuantity());
             totalProducts += td.getQuantity();
 
@@ -289,17 +391,19 @@ public class TransactionService {
             transactionDetail.setSnapshot(productSnapshot);
 
             transactionDetailList.add(transactionDetail);
-
-            // Save the transaction detail to the database
-            transactionDetailRepository.save(transactionDetail);
-
-            // Save the updated product stock to the database
-            productRepository.save(product);
         }
 
         transaction.setTotalPrice(totalPrice);
         transaction.setTotalProducts(totalProducts);
         transaction.setTransactionDetails(transactionDetailList);
+
+        // Save the transaction details to the database
+        transactionDetailRepository.saveAll(transactionDetailList);
+
+        // Save the updated product stock to the database
+        for (TransactionDetail transactionDetail : transactionDetailList) {
+            productRepository.save(transactionDetail.getProduct());
+        }
 
         Transaction newTransaction = transactionRepository.save(transaction);
 

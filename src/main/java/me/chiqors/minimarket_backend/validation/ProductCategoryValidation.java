@@ -22,13 +22,13 @@ public class ProductCategoryValidation {
     public List<String> createProductCategoryValidation(ProductCategoryDTO productCategoryDTO) {
         List<String> errors = new ArrayList<>();
 
-        if (productCategoryDTO.getName().isEmpty()) {
+        if (productCategoryDTO.getName() == null) {
             errors.add("Name is required.");
         } else if (productCategoryService.validateProductCategoryByName(productCategoryDTO.getName())) {
             errors.add("Name is already taken.");
         }
 
-        if (productCategoryDTO.getSkuCreated().isEmpty()) {
+        if (productCategoryDTO.getSkuCreated() == null) {
             errors.add("SKU created is required.");
         } else if (productCategoryDTO.getSkuCreated().length() < 3 || productCategoryDTO.getSkuCreated().length() > 4) {
             errors.add("SKU created must be 3-4 characters long.");
@@ -58,7 +58,7 @@ public class ProductCategoryValidation {
             }
         }
 
-        if (productCategoryDTO.getName().isEmpty()) {
+        if (productCategoryDTO.getName() == null) {
             errors.add("Name is required.");
         } else if (productCategoryService.validateProductCategoryByName(productCategoryDTO.getName())) {
             errors.add("Name is already taken.");
