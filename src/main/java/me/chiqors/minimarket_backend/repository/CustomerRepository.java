@@ -15,7 +15,7 @@ import java.util.List;
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
     Customer findByCustomerCode(String customerCode);
 
-    Page<Customer> findAllByNameContaining(String name, Pageable pageable);
+    Page<Customer> findAllByNameContainingIgnoreCase(String name, Pageable pageable);
 
     Customer findByPhoneNumber(String phoneNumber);
 

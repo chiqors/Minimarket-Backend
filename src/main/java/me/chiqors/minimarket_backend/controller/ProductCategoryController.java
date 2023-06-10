@@ -49,6 +49,29 @@ public class ProductCategoryController {
     }
 
     /**
+     * Retrieves all product categories for form dropdowns.
+     *
+     * @return the list of ProductCategoryDTOs
+     */
+    @GetMapping("/product-categories/dropdown")
+    public ResponseEntity<JSONResponse> getAllProductCategoriesForDropdown() {
+        try {
+            List<ProductCategoryDTO> productCategoryDTOList = productCategoryService.getAllProductCategoriesForDropdown();
+            if (productCategoryDTOList.isEmpty()) {
+                JSONResponse jsonResponse = new JSONResponse(HttpStatus.NOT_FOUND.value(), "No product categories found", null, null);
+                return ResponseEntity.ok(jsonResponse);
+            } else {
+                JSONResponse jsonResponse = new JSONResponse(HttpStatus.FOUND.value(), "Product categories retrieved", productCategoryDTOList, null);
+                return ResponseEntity.ok(jsonResponse);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JSONResponse jsonResponse = new JSONResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal server error", null, null);
+            return ResponseEntity.ok(jsonResponse);
+        }
+    }
+
+    /**
      * Retrieves a product category by its slug.
      * @param slug    The slug of the product category.
      * @return ResponseEntity containing a JSONResponse and an HTTP status code.

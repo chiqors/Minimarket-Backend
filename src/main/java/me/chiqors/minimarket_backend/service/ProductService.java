@@ -117,7 +117,7 @@ public class ProductService {
      * @return true if the product exists, false otherwise
      */
     public boolean validateProductByName(String name) {
-        return productRepository.existsByName(name);
+        return productRepository.existsByNameIgnoreCase(name);
     }
 
     /**

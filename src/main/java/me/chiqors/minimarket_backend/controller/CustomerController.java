@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin
 @RequestMapping("${api.prefix}")
+@CrossOrigin
 public class CustomerController {
     @Autowired
     private CustomerValidation customerValidation;

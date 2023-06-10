@@ -38,13 +38,13 @@ public class ProductValidation {
 
         if (productDTO.getPrice() == null) {
             errors.add("Price is required.");
-        } else if (productDTO.getPrice() < 0) {
+        } else if (productDTO.getPrice() <= 0) {
             errors.add("Price must be greater than 0.");
         }
 
         if (productDTO.getStock() == null) {
             errors.add("Stock is required.");
-        } else if (productDTO.getStock() < 0) {
+        } else if (productDTO.getStock() <= 0) {
             errors.add("Stock must be greater than 0.");
         }
 

@@ -53,7 +53,7 @@ public class EmployeeService {
         Page<Employee> employeePage;
 
         if (name != null) {
-            employeePage = employeeRepository.findAllByNameContaining(name, pageable);
+            employeePage = employeeRepository.findAllByNameIsContainingIgnoreCase(name, pageable);
         } else {
             employeePage = employeeRepository.findAll(pageable);
         }

@@ -9,6 +9,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class ProductCategoryService {
     @Autowired
@@ -43,6 +46,22 @@ public class ProductCategoryService {
         }
 
         return productCategoryPage.map(this::convertToDTO);
+    }
+
+    /**
+     * Retrieves all product categories for form dropdowns.
+     *
+     * @return the list of ProductCategoryDTOs
+     */
+    public List<ProductCategoryDTO> getAllProductCategoriesForDropdown() {
+        List<ProductCategory> productCategoryList = productCategoryRepository.findAllByOrderByCreatedAtDesc();
+        List<ProductCategoryDTO> productCategoryDTOList = new ArrayList<>();
+
+        for (ProductCategory productCategory : productCategoryList) {
+            productCategoryDTOList.add(convertToDTO(productCategory));
+        }
+
+        return productCategoryDTOList;
     }
 
     /**

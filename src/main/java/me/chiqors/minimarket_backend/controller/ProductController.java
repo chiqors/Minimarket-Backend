@@ -85,7 +85,7 @@ public class ProductController {
             try {
                 ProductDTO createdProductDTO = productService.createProduct(productDTO);
                 if (createdProductDTO != null) {
-                    JSONResponse jsonResponse = new JSONResponse(HttpStatus.OK.value(), "Product created", createdProductDTO, null);
+                    JSONResponse jsonResponse = new JSONResponse(HttpStatus.CREATED.value(), "Product created", createdProductDTO, null);
                     return ResponseEntity.ok(jsonResponse);
                 } else {
                     JSONResponse jsonResponse = new JSONResponse(HttpStatus.BAD_REQUEST.value(), "Failed to create product", null, null);

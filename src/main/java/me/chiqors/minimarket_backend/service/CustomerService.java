@@ -46,7 +46,7 @@ public class CustomerService {
         Page<Customer> customerPage;
 
         if (name != null) {
-            customerPage = customerRepository.findAllByNameContaining(name, pageable);
+            customerPage = customerRepository.findAllByNameContainingIgnoreCase(name, pageable);
         } else {
             customerPage = customerRepository.findAll(pageable);
         }
