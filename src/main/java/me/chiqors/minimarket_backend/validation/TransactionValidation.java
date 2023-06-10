@@ -67,18 +67,19 @@ public class TransactionValidation {
                             } else {
                                 addedSkus.add(transactionDetailDTO.getProductSku());
                             }
-                        }
-                    }
 
-                    if (transactionDetailDTO.getQuantity() == null) {
-                        errors.add("Quantity is required");
-                    } else {
-                        if (transactionDetailDTO.getQuantity() <= 0) {
-                            errors.add("Quantity must be greater than 0");
-                        } else {
-                            // Check if product quantity is enough
-                            if (!transactionService.isProductQuantityEnough(transactionDetailDTO.getProductSku(), transactionDetailDTO.getQuantity())) {
-                                errors.add("Product with SKU Code " + transactionDetailDTO.getProductSku() + " quantity is not enough");
+                            // Check if quantity is valid
+                            if (transactionDetailDTO.getQuantity() == null) {
+                                errors.add("Quantity is required");
+                            } else {
+                                if (transactionDetailDTO.getQuantity() <= 0) {
+                                    errors.add("Quantity must be greater than 0");
+                                } else {
+                                    // Check if product quantity is enough
+                                    if (!transactionService.isProductQuantityEnough(transactionDetailDTO.getProductSku(), transactionDetailDTO.getQuantity())) {
+                                        errors.add("Product with SKU Code " + transactionDetailDTO.getProductSku() + " quantity is not enough");
+                                    }
+                                }
                             }
                         }
                     }

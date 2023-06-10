@@ -39,8 +39,8 @@ public class TransactionController {
         try {
             Page<TransactionDTO> transactions = transactionService.getAllTransaction(page, size);
             if (transactions.getTotalElements() > 0) {
-                JSONResponse jsonResponse = new JSONResponse(HttpStatus.FOUND.value(), "Transactions found", transactions, null);
-                return new ResponseEntity<>(jsonResponse, HttpStatus.FOUND);
+                JSONResponse jsonResponse = new JSONResponse(HttpStatus.OK.value(), "Transactions found", transactions, null);
+                return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
             } else {
                 JSONResponse jsonResponse = new JSONResponse(HttpStatus.NOT_FOUND.value(), "Transactions not found", null, null);
                 return new ResponseEntity<>(jsonResponse, HttpStatus.NOT_FOUND);
@@ -58,13 +58,13 @@ public class TransactionController {
      * @param transactionCode transaction code
      * @return ResponseEntity with status code and JSONResponse
      */
-    @GetMapping("/transactions/{transactionCode}")
+    @GetMapping("/transactions/view/{transactionCode}")
     public ResponseEntity<JSONResponse> getTransactionByTransactionCode(@PathVariable String transactionCode) {
         try {
             TransactionDTO transaction = transactionService.getTransactionByTransactionCode(transactionCode);
             if (transaction != null) {
-                JSONResponse jsonResponse = new JSONResponse(HttpStatus.FOUND.value(), "Transaction found", transaction, null);
-                return new ResponseEntity<>(jsonResponse, HttpStatus.FOUND);
+                JSONResponse jsonResponse = new JSONResponse(HttpStatus.OK.value(), "Transaction found", transaction, null);
+                return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
             } else {
                 JSONResponse jsonResponse = new JSONResponse(HttpStatus.NOT_FOUND.value(), "Transaction not found", null, null);
                 return new ResponseEntity<>(jsonResponse, HttpStatus.NOT_FOUND);
@@ -88,8 +88,8 @@ public class TransactionController {
         try {
             List<TransactionDTO> transactions = transactionService.getTransactionByDate(start_date, end_date);
             if (transactions.size() > 0) {
-                JSONResponse jsonResponse = new JSONResponse(HttpStatus.FOUND.value(), "Transactions found", transactions, null);
-                return new ResponseEntity<>(jsonResponse, HttpStatus.FOUND);
+                JSONResponse jsonResponse = new JSONResponse(HttpStatus.OK.value(), "Transactions found", transactions, null);
+                return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
             } else {
                 JSONResponse jsonResponse = new JSONResponse(HttpStatus.NOT_FOUND.value(), "Transactions not found", null, null);
                 return new ResponseEntity<>(jsonResponse, HttpStatus.NOT_FOUND);
@@ -111,8 +111,8 @@ public class TransactionController {
         try {
             List<MostPurchasedProductDTO> mostPurchaseProducts = transactionService.getMostPurchasedProduct();
             if (mostPurchaseProducts.size() > 0) {
-                JSONResponse jsonResponse = new JSONResponse(HttpStatus.FOUND.value(), "Top 3 Most purchase products found", mostPurchaseProducts, null);
-                return new ResponseEntity<>(jsonResponse, HttpStatus.FOUND);
+                JSONResponse jsonResponse = new JSONResponse(HttpStatus.OK.value(), "Top 3 Most purchase products found", mostPurchaseProducts, null);
+                return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
             } else {
                 JSONResponse jsonResponse = new JSONResponse(HttpStatus.NOT_FOUND.value(), "Most purchase products not found", null, null);
                 return new ResponseEntity<>(jsonResponse, HttpStatus.NOT_FOUND);
@@ -136,8 +136,8 @@ public class TransactionController {
         try {
             List<CustomerPurchasedDTO> customerPurchased = transactionService.getCustomerPurchasedBetweenDate(start_date, end_date);
             if (customerPurchased.size() > 0) {
-                JSONResponse jsonResponse = new JSONResponse(HttpStatus.FOUND.value(), "Customer purchased found", customerPurchased, null);
-                return new ResponseEntity<>(jsonResponse, HttpStatus.FOUND);
+                JSONResponse jsonResponse = new JSONResponse(HttpStatus.OK.value(), "Customer purchased found", customerPurchased, null);
+                return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
             } else {
                 JSONResponse jsonResponse = new JSONResponse(HttpStatus.NOT_FOUND.value(), "Customer purchased not found", null, null);
                 return new ResponseEntity<>(jsonResponse, HttpStatus.NOT_FOUND);
@@ -161,8 +161,8 @@ public class TransactionController {
         try {
             List<MostPurchasedProductDTO> mostPurchasedWith = transactionService.getProductOftenPurchased(skuCode);
             if (mostPurchasedWith.size() > 0) {
-                JSONResponse jsonResponse = new JSONResponse(HttpStatus.FOUND.value(), "Most purchased with found", mostPurchasedWith, null);
-                return new ResponseEntity<>(jsonResponse, HttpStatus.FOUND);
+                JSONResponse jsonResponse = new JSONResponse(HttpStatus.OK.value(), "Most purchased with found", mostPurchasedWith, null);
+                return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
             } else {
                 JSONResponse jsonResponse = new JSONResponse(HttpStatus.NOT_FOUND.value(), "Most purchased with not found", null, null);
                 return new ResponseEntity<>(jsonResponse, HttpStatus.NOT_FOUND);
