@@ -4,6 +4,8 @@ import me.chiqors.minimarket_backend.dto.TransactionDTO;
 import me.chiqors.minimarket_backend.dto.custom.MostPurchasedProductDTO;
 import me.chiqors.minimarket_backend.dto.custom.CustomerPurchasedDTO;
 
+import me.chiqors.minimarket_backend.dto.custom.TransactionBetweenDateDTO;
+import me.chiqors.minimarket_backend.response.TransactionBetweenDateResponse;
 import me.chiqors.minimarket_backend.service.TransactionService;
 import me.chiqors.minimarket_backend.util.JSONResponse;
 import me.chiqors.minimarket_backend.validation.TransactionValidation;
@@ -88,9 +90,11 @@ public class TransactionController {
     @GetMapping("/transactions/date")
     public ResponseEntity<JSONResponse> getTransactionByDate(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date start_date, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date end_date, @RequestParam(required = false, defaultValue = "1") Integer page, @RequestParam(required = false, defaultValue = "3") Integer size) {
         try {
-            Page<TransactionDTO> transactions = transactionService.getTransactionByDate(start_date, end_date, page, size);
+            Page<TransactionBetweenDateDTO> transactions = transactionService.getTransactionByDate(start_date, end_date, page, size);
+            Double sum = transactionService.getTransactionSum(start_date, end_date);
+            TransactionBetweenDateResponse response = new TransactionBetweenDateResponse(transactions, sum);
             if (transactions.getTotalElements() > 0) {
-                JSONResponse jsonResponse = new JSONResponse(HttpStatus.OK.value(), "Transactions found", transactions, null);
+                JSONResponse jsonResponse = new JSONResponse(HttpStatus.OK.value(), "Transactions found", response, null);
                 return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
             } else {
                 JSONResponse jsonResponse = new JSONResponse(HttpStatus.NOT_FOUND.value(), "Transactions not found", null, null);
@@ -134,10 +138,10 @@ public class TransactionController {
      * @return List of CustomerPurchasedDTO
      */
     @GetMapping("/transactions/customer-purchased")
-    public ResponseEntity<JSONResponse> getCustomerPurchased(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date start_date, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date end_date) {
+    public ResponseEntity<JSONResponse> getCustomerPurchased(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date start_date, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date end_date, @RequestParam(required = false, defaultValue = "1") Integer page, @RequestParam(required = false, defaultValue = "3") Integer size) {
         try {
-            List<CustomerPurchasedDTO> customerPurchased = transactionService.getCustomerPurchasedBetweenDate(start_date, end_date);
-            if (customerPurchased.size() > 0) {
+            Page<CustomerPurchasedDTO> customerPurchased = transactionService.getCustomerPurchasedBetweenDate(start_date, end_date, page, size);
+            if (customerPurchased.getTotalElements() > 0) {
                 JSONResponse jsonResponse = new JSONResponse(HttpStatus.OK.value(), "Customer purchased found", customerPurchased, null);
                 return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
             } else {

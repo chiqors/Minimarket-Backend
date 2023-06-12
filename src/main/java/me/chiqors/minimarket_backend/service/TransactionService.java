@@ -1,20 +1,23 @@
 package me.chiqors.minimarket_backend.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.chiqors.minimarket_backend.dto.*;
 import me.chiqors.minimarket_backend.dto.custom.CustomerPurchasedDTO;
 import me.chiqors.minimarket_backend.dto.custom.MostPurchasedProductDTO;
+import me.chiqors.minimarket_backend.dto.custom.TransactionBetweenDateDTO;
 import me.chiqors.minimarket_backend.model.*;
 import me.chiqors.minimarket_backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -128,6 +131,25 @@ public class TransactionService {
     }
 
     /**
+     * Convert List of Transaction to List of TransactionBetweenDateDTO
+     *
+     * @param transaction List of Transaction object to be converted
+     * @return List of TransactionBetweenDateDTO object
+     */
+    public TransactionBetweenDateDTO convertToTransactionBetweenDateDTO(Transaction transaction) {
+        return new TransactionBetweenDateDTO(
+                transaction.getTransactionCode(),
+                transaction.getCreatedAt().toString(),
+                transaction.getUpdatedAt().toString(),
+                transaction.getStatus(),
+                transaction.getTotalProducts(),
+                transaction.getTotalPrice(),
+                transaction.getEmployee().getName(),
+                transaction.getCustomer().getName()
+        );
+    }
+
+    /**
      * Convert ProductCategory to ProductCategoryDTO
      *
      * @param productCategory ProductCategory object to be converted
@@ -183,12 +205,40 @@ public class TransactionService {
     }
 
     /**
+     * Get sum of total price of transaction in between date
+     *
+     * @param start_date Start date of transaction
+     * @param end_date End date of transaction
+     * @return Double of sum of total price
+     */
+    public Double getTransactionSum(Date start_date, Date end_date) {
+        if (start_date == null) {
+            // day-7 from now
+            start_date = new Date(System.currentTimeMillis() - 7 * 24 * 60 * 60 * 1000);
+        }
+        if (end_date == null) {
+            // now
+            end_date = new Date(System.currentTimeMillis());
+        }
+        // add 1 day to endDate to get transaction in endDate
+        Calendar c = Calendar.getInstance();
+        c.setTime(end_date);
+        c.add(Calendar.DATE, 1);
+        end_date = c.getTime();
+        Double sum = transactionRepository.sumTotalPrice(start_date, end_date);
+        if (sum == null) {
+            sum = 0.0;
+        }
+        return sum;
+    }
+
+    /**
      * Get a list of transaction and the total of transaction in between date
      *
      * @param startDate Start date of transaction
-     * @param endDate End date of transaction
+     * @param endDate   End date of transaction
      */
-    public Page<TransactionDTO> getTransactionByDate(Date startDate, Date endDate, Integer page, Integer size) {
+    public Page<TransactionBetweenDateDTO> getTransactionByDate(Date startDate, Date endDate, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page-1, size);
         if (startDate == null) {
             // day-7 from now
@@ -203,9 +253,9 @@ public class TransactionService {
         c.setTime(endDate);
         c.add(Calendar.DATE, 1);
         endDate = c.getTime();
-        Page<Transaction> transactionPage = transactionRepository.findByCreatedAtBetween(startDate, endDate, pageable);
+        Page<Transaction> transactionPage = transactionRepository.findByCreatedAtBetweenOrderByCreatedAtDesc(startDate, endDate, pageable);
 
-        return transactionPage.map(this::convertToTransactionDTO);
+        return transactionPage.map(this::convertToTransactionBetweenDateDTO);
     }
 
     /**
@@ -237,31 +287,57 @@ public class TransactionService {
      *
      * @param startDate Start date of transaction
      * @param endDate End date of transaction
-     * @return List of CustomerPurchasedDTO
+     * @param page Page number of transaction
+     * @param size Size of transaction
+     * @return Page of CustomerPurchasedDTO
      */
-    public List<CustomerPurchasedDTO> getCustomerPurchasedBetweenDate(Date startDate, Date endDate) {
-        // [{c.name, c.customer_code, c.phone_number, c.address, c.gender, c.birth_date, c.created_at, c.updated_at, SUM(t.total_price) AS total_price, COUNT(t.customer_id) AS total_purchased}]
-        List<Object[]> customerPurchasedList = customerRepository.getCustomerByTransactionDate(startDate, endDate);
+    public Page<CustomerPurchasedDTO> getCustomerPurchasedBetweenDate(Date startDate, Date endDate, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page-1, size);
+        if (startDate == null) {
+            // day-7 from now
+            startDate = new Date(System.currentTimeMillis() - 7 * 24 * 60 * 60 * 1000);
+        }
+        if (endDate == null) {
+            // now
+            endDate = new Date(System.currentTimeMillis());
+        }
+        // add 1 day to endDate to get transaction in endDate
+        Calendar c = Calendar.getInstance();
+        c.setTime(endDate);
+        c.add(Calendar.DATE, 1);
+        endDate = c.getTime();
+        Page<Object[]> customerTransactionSummaryPage = customerRepository.findAllCustomerTransactionSummary(startDate, endDate, pageable);
         List<CustomerPurchasedDTO> customerPurchasedDTOList = new ArrayList<>();
 
-        for (Object[] customerPurchased : customerPurchasedList) {
-            CustomerPurchasedDTO customerPurchasedDTO = new CustomerPurchasedDTO(
-                    customerPurchased[0].toString(),
-                    customerPurchased[1].toString(),
-                    customerPurchased[2].toString(),
-                    customerPurchased[3].toString(),
-                    customerPurchased[4].toString(),
-                    customerPurchased[5].toString(),
-                    customerPurchased[6].toString(),
-                    customerPurchased[7].toString(),
-                    Double.parseDouble(customerPurchased[8].toString()),
-                    Integer.parseInt(customerPurchased[9].toString())
-            );
+        for (Object[] customerTransactionSummary : customerTransactionSummaryPage) {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat formatter2 = new SimpleDateFormat("yyyy-MM-dd");
 
-            customerPurchasedDTOList.add(customerPurchasedDTO);
+            try {
+                Date birthDate = formatter2.parse(customerTransactionSummary[5].toString());
+                Date createdAt = formatter.parse(customerTransactionSummary[6].toString());
+                Date updatedAt = formatter.parse(customerTransactionSummary[7].toString());
+
+                CustomerPurchasedDTO customerPurchasedDTO = new CustomerPurchasedDTO(
+                        customerTransactionSummary[0].toString(),
+                        customerTransactionSummary[1].toString(),
+                        customerTransactionSummary[2].toString(),
+                        customerTransactionSummary[3].toString(),
+                        customerTransactionSummary[4].toString(),
+                        birthDate,
+                        createdAt,
+                        updatedAt,
+                        Double.parseDouble(customerTransactionSummary[8].toString()),
+                        Integer.parseInt(customerTransactionSummary[9].toString())
+                );
+
+                customerPurchasedDTOList.add(customerPurchasedDTO);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
 
-        return customerPurchasedDTOList;
+        return new PageImpl<>(customerPurchasedDTOList, pageable, customerTransactionSummaryPage.getTotalElements());
     }
 
     /**

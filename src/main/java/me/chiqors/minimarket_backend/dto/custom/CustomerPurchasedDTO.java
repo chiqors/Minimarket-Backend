@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 @AllArgsConstructor
 public class CustomerPurchasedDTO {
@@ -20,13 +22,13 @@ public class CustomerPurchasedDTO {
     private String gender;
 
     @JsonProperty("birth_date")
-    private String birthDate;
+    private Date birthDate;
 
     @JsonProperty("created_at")
-    private String createdAt;
+    private Date createdAt;
 
     @JsonProperty("updated_at")
-    private String updatedAt;
+    private Date updatedAt;
 
     @JsonProperty("total_price")
     private Double totalPrice;
