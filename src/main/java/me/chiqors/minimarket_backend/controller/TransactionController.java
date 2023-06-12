@@ -79,15 +79,17 @@ public class TransactionController {
     /**
      * Get a list of transaction and the total of transaction in between date
      *
-     * @param start_date start date
-     * @param end_date end date
+     * @param start_date (optional) start date
+     * @param end_date  (optional) end date
+     * @param page (optional) page number
+     * @param size (optional) number of items per page
      * @return ResponseEntity with status code and JSONResponse
      */
     @GetMapping("/transactions/date")
-    public ResponseEntity<JSONResponse> getTransactionByDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date start_date, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date end_date) {
+    public ResponseEntity<JSONResponse> getTransactionByDate(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date start_date, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date end_date, @RequestParam(required = false, defaultValue = "1") Integer page, @RequestParam(required = false, defaultValue = "3") Integer size) {
         try {
-            List<TransactionDTO> transactions = transactionService.getTransactionByDate(start_date, end_date);
-            if (transactions.size() > 0) {
+            Page<TransactionDTO> transactions = transactionService.getTransactionByDate(start_date, end_date, page, size);
+            if (transactions.getTotalElements() > 0) {
                 JSONResponse jsonResponse = new JSONResponse(HttpStatus.OK.value(), "Transactions found", transactions, null);
                 return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
             } else {

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -176,7 +177,7 @@ public class TransactionService {
      */
     public Page<TransactionDTO> getAllTransaction(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page-1, size);
-        Page<Transaction> transactionPage = transactionRepository.findAll(pageable);
+        Page<Transaction> transactionPage = transactionRepository.findAllByOrderByCreatedAtDesc(pageable);
 
         return transactionPage.map(this::convertToTransactionDTO);
     }
@@ -187,15 +188,24 @@ public class TransactionService {
      * @param startDate Start date of transaction
      * @param endDate End date of transaction
      */
-    public List<TransactionDTO> getTransactionByDate(Date startDate, Date endDate) {
-        List<Transaction> transactionList = transactionRepository.findByCreatedAtBetween(startDate, endDate);
-        List<TransactionDTO> transactionDTOList = new ArrayList<>();
-
-        for (Transaction transaction : transactionList) {
-            transactionDTOList.add(convertToTransactionDTO(transaction));
+    public Page<TransactionDTO> getTransactionByDate(Date startDate, Date endDate, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page-1, size);
+        if (startDate == null) {
+            // day-7 from now
+            startDate = new Date(System.currentTimeMillis() - 7 * 24 * 60 * 60 * 1000);
         }
+        if (endDate == null) {
+            // now
+            endDate = new Date(System.currentTimeMillis());
+        }
+        // add 1 day to endDate to get transaction in endDate
+        Calendar c = Calendar.getInstance();
+        c.setTime(endDate);
+        c.add(Calendar.DATE, 1);
+        endDate = c.getTime();
+        Page<Transaction> transactionPage = transactionRepository.findByCreatedAtBetween(startDate, endDate, pageable);
 
-        return transactionDTOList;
+        return transactionPage.map(this::convertToTransactionDTO);
     }
 
     /**
