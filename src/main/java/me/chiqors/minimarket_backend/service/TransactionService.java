@@ -273,7 +273,9 @@ public class TransactionService {
                     mostPurchasedProduct[0].toString(),
                     mostPurchasedProduct[1].toString(),
                     mostPurchasedProduct[2].toString(),
-                    Integer.parseInt(mostPurchasedProduct[3].toString())
+                    Integer.parseInt(mostPurchasedProduct[3].toString()),
+                    Double.parseDouble(mostPurchasedProduct[4].toString()),
+                    Integer.parseInt(mostPurchasedProduct[5].toString())
             );
 
             mostPurchasedProductDTOList.add(mostPurchasedProductDTO);
@@ -356,7 +358,9 @@ public class TransactionService {
                     productOftenPurchased[0].toString(),
                     productOftenPurchased[1].toString(),
                     productOftenPurchased[2].toString(),
-                    Integer.parseInt(productOftenPurchased[3].toString())
+                    Integer.parseInt(productOftenPurchased[3].toString()),
+                    Double.parseDouble(productOftenPurchased[4].toString()),
+                    Integer.parseInt(productOftenPurchased[5].toString())
             );
 
             mostPurchasedProductDTOList.add(mostPurchasedProductDTO);
